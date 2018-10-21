@@ -166,30 +166,21 @@
 			"buffers":
 			[
 				{
-					"file": "/G/Git/Java/devel/uni/project/lab01/myapp/pom.xml",
+					"file": "/G/Документы/Google Диск/ВлГУ/Инструментальные средства информационных систем/Лабораторная работа №3/perl.pl",
 					"settings":
 					{
-						"buffer_size": 1019,
+						"buffer_size": 1224,
 						"encoding": "UTF-8",
-						"line_ending": "Windows"
+						"line_ending": "Unix"
 					}
 				},
 				{
-					"file": "/G/Git/Java/devel/uni/project/lab01/mylib/pom.xml",
+					"file": "/G/Документы/Google Диск/ВлГУ/Инструментальные средства информационных систем/Лабораторная работа №3/lab3.pl",
 					"settings":
 					{
-						"buffer_size": 957,
+						"buffer_size": 718,
 						"encoding": "UTF-8",
-						"line_ending": "Windows"
-					}
-				},
-				{
-					"file": "/G/Git/Java/devel/uni/project/lab01/pom.xml",
-					"settings":
-					{
-						"buffer_size": 737,
-						"encoding": "UTF-8",
-						"line_ending": "Windows"
+						"line_ending": "Unix"
 					}
 				}
 			],
@@ -229,10 +220,11 @@
 			],
 			"file_history":
 			[
+				"/G/Git/Java/devel/uni/project/lab01/pom.xml",
 				"/G/Git/Java/devel/uni/project/lab01/mylib/pom.xml",
+				"/G/Git/Java/devel/uni/project/lab01/myapp/pom.xml",
 				"/G/Git/Java/devel/uni/project/lab01/mylib/src/main/java/mylib/App.java",
 				"/G/Git/Java/devel/uni/project/lab01/myapp/src/main/java/ru/wirbel/lab01/myapp/Application.java",
-				"/G/Git/Java/devel/uni/project/lab01/myapp/pom.xml",
 				"/G/Git/Java/devel/uni/project/lab01/pon.xml",
 				"/G/devel/uni/project/lab01/myapp/src/main/java/ru/wirbel/lab01/myapp/Application.java",
 				"/G/devel/uni/project/lab01/myapp/pom.xml",
@@ -284,88 +276,59 @@
 					[
 						{
 							"buffer": 0,
-							"file": "/G/Git/Java/devel/uni/project/lab01/myapp/pom.xml",
+							"file": "/G/Документы/Google Диск/ВлГУ/Инструментальные средства информационных систем/Лабораторная работа №3/perl.pl",
 							"semi_transient": false,
 							"settings":
 							{
-								"buffer_size": 1019,
+								"buffer_size": 1224,
 								"regions":
 								{
 								},
 								"selection":
 								[
 									[
-										804,
-										804
+										0,
+										1224
 									]
 								],
 								"settings":
 								{
-									"syntax": "Packages/XML/XML.sublime-syntax"
-								},
-								"translation.x": 0.0,
-								"translation.y": 0.0,
-								"zoom_level": 1.0
-							},
-							"stack_index": 2,
-							"type": "text"
-						},
-						{
-							"buffer": 1,
-							"file": "/G/Git/Java/devel/uni/project/lab01/mylib/pom.xml",
-							"semi_transient": false,
-							"settings":
-							{
-								"buffer_size": 957,
-								"regions":
-								{
-								},
-								"selection":
-								[
-									[
-										277,
-										277
-									]
-								],
-								"settings":
-								{
-									"syntax": "Packages/XML/XML.sublime-syntax",
-									"tab_size": 2,
-									"translate_tabs_to_spaces": true
-								},
-								"translation.x": 0.0,
-								"translation.y": 0.0,
-								"zoom_level": 1.0
-							},
-							"stack_index": 0,
-							"type": "text"
-						},
-						{
-							"buffer": 2,
-							"file": "/G/Git/Java/devel/uni/project/lab01/pom.xml",
-							"semi_transient": false,
-							"settings":
-							{
-								"buffer_size": 737,
-								"regions":
-								{
-								},
-								"selection":
-								[
-									[
-										726,
-										726
-									]
-								],
-								"settings":
-								{
-									"syntax": "Packages/XML/XML.sublime-syntax"
+									"syntax": "Packages/Perl/Perl.sublime-syntax"
 								},
 								"translation.x": 0.0,
 								"translation.y": 0.0,
 								"zoom_level": 1.0
 							},
 							"stack_index": 1,
+							"type": "text"
+						},
+						{
+							"buffer": 1,
+							"file": "/G/Документы/Google Диск/ВлГУ/Инструментальные средства информационных систем/Лабораторная работа №3/lab3.pl",
+							"semi_transient": false,
+							"settings":
+							{
+								"buffer_size": 718,
+								"regions":
+								{
+								},
+								"selection":
+								[
+									[
+										0,
+										718
+									]
+								],
+								"settings":
+								{
+									"syntax": "Packages/Perl/Perl.sublime-syntax",
+									"translate_tabs_to_spaces": false
+								},
+								"translation.x": 0.0,
+								"translation.y": 0.0,
+								"zoom_level": 1.0
+							},
+							"stack_index": 0,
 							"type": "text"
 						}
 					]
@@ -407,7 +370,7 @@
 				"height": 0.0
 			},
 			"pinned_build_system": "",
-			"position": "0,0,1,-1,-1,-1,-1,967,951,192,1853",
+			"position": "0,0,1,-1,-1,-1,-1,933,71,158,973",
 			"project": "",
 			"replace":
 			{
