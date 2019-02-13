@@ -1,5 +1,6 @@
 package ru.currencycollection;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
 
     TextView txtFileName, txtName, txtValue, txtCurrency;
     Button btnSave, btnLoad, btnIncreace, btnReduce, btnClear, btnUpd, btnClearCollection;
@@ -45,6 +46,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnUpd.setOnClickListener(this);
         btnClearCollection = (Button) findViewById(R.id.btnClearCollection);
         btnClearCollection.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("currencyCollection", currencyCollection);
+        Toast.makeText(this, "Схоронено", Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currencyCollection = (CurrencyCollection) savedInstanceState.getSerializable("currencyCollection");
+        Toast.makeText(this, "Загружено", Toast.LENGTH_SHORT);
     }
 
     public void updateColllection() {
