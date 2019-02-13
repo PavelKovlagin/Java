@@ -52,14 +52,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("currencyCollection", currencyCollection);
-        Toast.makeText(this, "Схоронено", Toast.LENGTH_SHORT);
+        outState.putString("txtCurrency", (String) txtCurrency.getText());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         currencyCollection = (CurrencyCollection) savedInstanceState.getSerializable("currencyCollection");
-        Toast.makeText(this, "Загружено", Toast.LENGTH_SHORT);
+        txtCurrency.setText(savedInstanceState.getString("txtCurrency"));
     }
 
     public void updateColllection() {
