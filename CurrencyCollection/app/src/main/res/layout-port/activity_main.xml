@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <CheckBox
+        android:id="@+id/cbMenu"
+        android:layout_width="130dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Расширенное меню"
+        app:layout_constraintStart_toEndOf="@+id/txtFileName"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnLoad"
         android:layout_width="110dp"

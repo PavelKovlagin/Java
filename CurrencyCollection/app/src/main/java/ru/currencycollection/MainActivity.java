@@ -3,8 +3,11 @@ package ru.currencycollection;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     TextView txtFileName, txtName, txtValue, txtCurrency;
     Button btnSave, btnLoad, btnIncreace, btnReduce, btnClear, btnUpd, btnClearCollection;
+    CheckBox cbMenu;
     CurrencyCollection currencyCollection;
 
     @Override
@@ -31,6 +35,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         txtCurrency = (TextView) findViewById(R.id.txtCurrency);
         txtName = (TextView) findViewById(R.id.txtName);
         txtValue = (TextView) findViewById(R.id.txtValue);
+
+        cbMenu = (CheckBox) findViewById(R.id.cbMenu);
 
         btnLoad = (Button) findViewById(R.id.btnLoad);
         btnLoad.setOnClickListener(this);
@@ -46,6 +52,33 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnUpd.setOnClickListener(this);
         btnClearCollection = (Button) findViewById(R.id.btnClearCollection);
         btnClearCollection.setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        String str = "";
+        switch (menuItem.getItemId()) {
+            case R.id.itemRUB:
+                txtValue.setText("100");
+                break;
+            case R.id.itemUSD:
+                txtValue.setText("200");
+                break;
+            case R.id.itemGRV:
+                txtValue.setText("300");
+                break;
+        }
+        Toast.makeText(this, str, Toast.LENGTH_SHORT);
+
+        txtName.setText(menuItem.getTitle());
+        return super.onOptionsItemSelected(menuItem);
     }
 
     @Override
