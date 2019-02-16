@@ -1,8 +1,9 @@
-package ru.currencycollection;
+package ru.currencycollection.currenties;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +19,41 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+import ru.currencycollection.R;
+import ru.currencycollection.convertor.ActConvertor;
+
+public class ActCurrencies extends AppCompatActivity implements View.OnClickListener {
 
     TextView txtFileName, txtName, txtValue, txtCurrency;
-    Button btnSave, btnLoad, btnIncreace, btnReduce, btnClear, btnUpd, btnClearCollection;
+    Button btnSave, btnLoad, banIncrease, btnReduce, btnClear, btnUpd, btnClearCollection, btnMenuCurrency, btnMenuValues, btnActConvertor;
     CheckBox cbMenu;
     CurrencyCollection currencyCollection;
+
+    final int RUB = 1;
+    final int UBD = 2;
+    final int GRV = 3;
+    final int v100 = 100;
+    final int v1000 = 1000;
+    final int v10000 = 10000;
+
+    public void updateColllection() {
+        if (currencyCollection != null) {
+            txtCurrency.setText(currencyCollection.getCurrencyCollectionsString());
+        } else {
+            Toast.makeText(this, "Коллекция пуста", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void setValue(boolean increase) {
+        try {
+            if (currencyCollection == null) currencyCollection = new CurrencyCollection();
+            if (!currencyCollection.addCurrency(new Currency(txtName.getText().toString(), Double.parseDouble(txtValue.getText().toString()), increase)))
+                Toast.makeText(this, "Валюта не три символа", Toast.LENGTH_SHORT).show();
+            txtCurrency.setText(currencyCollection.getCurrencyCollectionsString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Неверный формат числа", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,22 +66,33 @@ public class MainActivity extends Activity implements View.OnClickListener {
         txtName = (TextView) findViewById(R.id.txtName);
         txtValue = (TextView) findViewById(R.id.txtValue);
 
-        cbMenu = (CheckBox) findViewById(R.id.cbMenu);
+        btnLoad = (Button) findViewById(R.id.btnLoad); btnLoad.setOnClickListener(this);
+        btnSave = (Button) findViewById(R.id.btnSave); btnSave.setOnClickListener(this);
+        banIncrease = (Button) findViewById(R.id.btnIncreace); banIncrease.setOnClickListener(this);
+        btnReduce = (Button) findViewById(R.id.btnReduce); btnReduce.setOnClickListener(this);
+        btnClear = (Button) findViewById(R.id.btnClear); btnClear.setOnClickListener(this);
+        btnUpd = (Button) findViewById(R.id.btnUpdate); btnUpd.setOnClickListener(this);
+        btnClearCollection = (Button) findViewById(R.id.btnClearCollection); btnClearCollection.setOnClickListener(this);
+        btnMenuCurrency = (Button) findViewById(R.id.btnMenuCurrency); registerForContextMenu(btnMenuCurrency);
+        btnMenuValues = (Button) findViewById(R.id.btnMenuValues); btnMenuValues.setOnCreateContextMenuListener(this);
+        btnActConvertor = (Button) findViewById(R.id.btnActConvertor); btnActConvertor.setOnClickListener(this);
 
-        btnLoad = (Button) findViewById(R.id.btnLoad);
-        btnLoad.setOnClickListener(this);
-        btnSave = (Button) findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(this);
-        btnIncreace = (Button) findViewById(R.id.btnIncreace);
-        btnIncreace.setOnClickListener(this);
-        btnReduce = (Button) findViewById(R.id.btnReduce);
-        btnReduce.setOnClickListener(this);
-        btnClear = (Button) findViewById(R.id.btnClear);
-        btnClear.setOnClickListener(this);
-        btnUpd = (Button) findViewById(R.id.btnUpdate);
-        btnUpd.setOnClickListener(this);
-        btnClearCollection = (Button) findViewById(R.id.btnClearCollection);
-        btnClearCollection.setOnClickListener(this);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        switch (v.getId()) {
+            case R.id.btnMenuCurrency:
+                menu.add(0,RUB,0,"RUB");
+                menu.add(0,UBD,0,"UBD");
+                menu.add(0,GRV,0,"GRV");
+                break;
+            case R.id.btnMenuValues:
+                menu.add(0,v100,0,"100");
+                menu.add(0,v1000,0,"1000");
+                menu.add(0,v10000,0,"10000");
+                break;
+        }
     }
 
     @Override
@@ -59,6 +100,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case RUB:
+                txtName.setText("RUB");
+                break;
+            case UBD:
+                txtName.setText("UBD");
+                break;
+            case GRV:
+                txtName.setText("GRV");
+                break;
+            case v100:
+                txtValue.setText("100");
+                break;
+            case v1000:
+                txtValue.setText("1000");
+                break;
+            case v10000:
+                txtValue.setText("10000");
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -93,40 +159,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onRestoreInstanceState(savedInstanceState);
         currencyCollection = (CurrencyCollection) savedInstanceState.getSerializable("currencyCollection");
         txtCurrency.setText(savedInstanceState.getString("txtCurrency"));
-    }
-
-    public void updateColllection() {
-        if (currencyCollection != null) {
-            txtCurrency.setText(currencyCollection.getCurrencyCollectionsString());
-            Toast.makeText(this, "Коллекция обновлена", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Коллекция пуста", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void setValue(boolean increasce) {
-        try {
-            if (currencyCollection == null) currencyCollection = new CurrencyCollection();
-            int var = currencyCollection.addCurrency(new Currency(txtName.getText().toString(), Double.parseDouble(txtValue.getText().toString())), increasce);
-
-            switch (var) {
-                case 0:
-                    Toast.makeText(this, "Ошибка добавления валюты", Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Toast.makeText(this, "Добавлена новая валюта", Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    if (increasce)
-                        Toast.makeText(this, "Значение валюты увеличено", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(this, "Значение валюты уменьшено", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-            txtCurrency.setText(currencyCollection.getCurrencyCollectionsString());
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Неверный формат числа", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -172,7 +204,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 } catch (ClassNotFoundException e) {
                     Toast.makeText(this, "Класс не найден", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case R.id.btnUpdate:
                 updateColllection();
@@ -181,6 +212,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 currencyCollection = null;
                 System.gc();
                 Toast.makeText(this, "Коллекция очищена", Toast.LENGTH_SHORT).show();
+                break;
+            case  R.id.btnActConvertor:
+                startActivity(new Intent(this, ActConvertor.class));
                 break;
         }
     }

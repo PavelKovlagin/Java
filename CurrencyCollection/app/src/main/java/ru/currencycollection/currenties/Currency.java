@@ -1,4 +1,4 @@
-package ru.currencycollection;
+package ru.currencycollection.currenties;
 
 import java.io.Serializable;
 
@@ -7,9 +7,14 @@ public class Currency implements Serializable {
     private String name;
     private double value;
 
-    public Currency (String name, double value) {
+    public Currency (String name, double value, boolean increace) {
         this.name = name;
-        this.value = value;
+        if (increace) {
+            this.value = value;
+        } else {
+            this.value = -value;
+        }
+
     }
 
     public String getName() {
@@ -20,9 +25,7 @@ public class Currency implements Serializable {
         return  this.value;
     }
 
-    public void increaceValue(double value) {
+    public void setValue(double value) {
         this.value += value;
     }
-
-    public void reduceValue(double value) { this.value -= value; }
 }

@@ -1,4 +1,4 @@
-package ru.currencycollection;
+package ru.currencycollection.currenties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,21 +7,20 @@ public class CurrencyCollection implements Serializable {
 
     private ArrayList<Currency> currencyCollections = new ArrayList<Currency>();
 
-    public int addCurrency(Currency currency, boolean increace) {
+    public boolean addCurrency(Currency currency) {
         if (currency.getName().length() == 3 )
         {
             for (Currency curColl : currencyCollections) {
                 if (curColl.getName().equals(currency.getName())) {
-                    if (increace) curColl.increaceValue(currency.getValue());
-                    else curColl.reduceValue(currency.getValue());
-                    return 2; //валюта обновлена
+                    curColl.setValue(currency.getValue());
+                    return true; //валюта обновлена
                 }
             }
             currencyCollections.add(currency);
-            return  1; //Добавлена н новая валюта
+            return  true; //Добавлена н новая валюта
         }
         else
-            return 0; //Валюта не три символа
+            return false; //Валюта не три символа
     }
 
     public ArrayList<Currency> getCurrencyCollections() {
