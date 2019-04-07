@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -15,11 +14,13 @@ import android.widget.Toast;
 
 public class ProductList extends Activity implements View.OnClickListener {
 
+    ListProducts listProducts = new ListProducts();
+
     Button btnActCabinet, btnActPromotion, btnProductAdd, btnAmountLimiter;
     TextView textAmountLimiter;
     EditText editAmountLimiter;
 
-    int Barcode;
+    String Barcode;
     public void dialogAddProduct() {
         final String[] dialogAddProduct = {"По штрих коду", "Сканировать", "Отмена"};
 
@@ -58,7 +59,8 @@ public class ProductList extends Activity implements View.OnClickListener {
         builder.setPositiveButton("Принять", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Barcode = Integer.parseInt(input.getText().toString());
+                Barcode = input.getText().toString();
+                Toast.makeText(getApplicationContext(), listProducts.addProduct(Barcode), Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
