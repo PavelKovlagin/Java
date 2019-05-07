@@ -1,4 +1,4 @@
-package com.goodscalculator;
+package com.goodscalculator.Cabinet;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class Cabinet extends Activity implements View.OnClickListener {
+import com.goodscalculator.R;
+import com.goodscalculator.ProductList.ProductListAct;
+import com.goodscalculator.Promotions.PromotionAct;
+
+public class CabinetAct extends Activity implements View.OnClickListener {
 
     Button btnActPromotion, btnActListProduction;
 
@@ -23,10 +27,10 @@ public class Cabinet extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnActPromotion:
-                startActivity(new Intent(this, Promotion.class));
+                startActivity(new Intent(this, PromotionAct.class));
                 break;
             case R.id.btnActProductList:
-                startActivity(new Intent(this, ProductList.class));
+                startActivity(new Intent(this, ProductListAct.class));
                 break;
         }
     }

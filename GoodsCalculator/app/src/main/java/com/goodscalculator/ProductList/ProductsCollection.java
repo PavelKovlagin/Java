@@ -1,32 +1,25 @@
-package com.goodscalculator;
+package com.goodscalculator.ProductList;
 
-import android.app.Activity;
 import android.util.Log;
 
+import com.goodscalculator.JSONhelper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static android.content.Context.MODE_PRIVATE;
-
-public class ProductsCollection {
+public class ProductsCollection extends ArrayList<Product> {
 
     private static final String TAG = ProductsCollection.class.getSimpleName();
 
     private ArrayList<Product> productsCollection = new ArrayList<Product>();
 
-    private double totalAmount = 0;
-
-    private void countingTotalAmount() {
+    public double countingTotalAmount() {
         double totalAmount = 0;
         for (Product productCol : productsCollection) {
             totalAmount = totalAmount + productCol.getPrice();
         }
-        this.totalAmount = totalAmount;
-    }
-
-    public double getTotalAmount() {
         return totalAmount;
     }
 
@@ -36,6 +29,18 @@ public class ProductsCollection {
             collection = collection + productCol.getName() + " " + productCol.getPrice() + "\n";
         }
         return collection;
+    }
+
+    public String getJSONfromProductsCollection() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        return gson.toJson(productsCollection);
+    }
+
+    public void getProductsCollectionFromJSON(String json) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        productsCollection = gson.fromJson(json, ProductsCollection.class);
     }
 
     public boolean addProduct(String host, String bar_code) {
@@ -52,7 +57,6 @@ public class ProductsCollection {
                 Product product = new Product();
                 product = gson.fromJson(JSONstr, Product.class);
                 productsCollection.add(product);
-                countingTotalAmount();
                 return true;
             }
         } catch (ExecutionException e) {

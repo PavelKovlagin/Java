@@ -1,4 +1,4 @@
-package com.goodscalculator;
+package com.goodscalculator.ProductList;
 
 public class Product {
 

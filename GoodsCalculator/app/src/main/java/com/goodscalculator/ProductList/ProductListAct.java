@@ -1,19 +1,26 @@
-package com.goodscalculator;
+package com.goodscalculator.ProductList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ProductList extends Activity implements View.OnClickListener {
+import com.goodscalculator.Cabinet.CabinetAct;
+import com.goodscalculator.R;
+import com.goodscalculator.Promotions.PromotionAct;
+
+public class ProductListAct extends Activity implements View.OnClickListener {
 
     ProductsCollection productsCollection = new ProductsCollection();
 
@@ -22,14 +29,17 @@ public class ProductList extends Activity implements View.OnClickListener {
     EditText editAmountLimiter;
 
     private Integer amountLim = 0;
-    private final String host = "192.168.1.9:777";
 
-    private  void checkAmountLimin() {
-        if ((amountLim > 0) && (amountLim < productsCollection.getTotalAmount())) {
-            textTotalAmount.setText("Общая сумма:" + String.valueOf(productsCollection.getTotalAmount()));
+    private String host;
+
+    private  void checkAmountLimit() {
+        double totalAmount = productsCollection.countingTotalAmount();
+        amountLim = Integer.parseInt(String.valueOf(editAmountLimiter.getText()));
+        if ((amountLim > 0) && (amountLim < totalAmount)) {
+            textTotalAmount.setText("Общая сумма:" + String.valueOf(totalAmount));
             textTotalAmount.setTextColor(Color.RED);
         } else {
-            textTotalAmount.setText("Общая сумма:" + String.valueOf(productsCollection.getTotalAmount()));
+            textTotalAmount.setText("Общая сумма:" + String.valueOf(totalAmount));
             textTotalAmount.setTextColor(Color.BLACK);
         }
     }
@@ -38,7 +48,8 @@ public class ProductList extends Activity implements View.OnClickListener {
         if (productsCollection.addProduct(host, bar_code)) {
             Toast.makeText(getApplicationContext(), "Товар добавлен в список", Toast.LENGTH_SHORT).show();
             textProductsCollection.setText(productsCollection.getProductCollectionString());
-            checkAmountLimin();
+            Log.i("GSON", productsCollection.getJSONfromProductsCollection());
+            checkAmountLimit();
         } else {
             Toast.makeText(getApplicationContext(), "Ошибка добавления товара", Toast.LENGTH_SHORT).show();
         }
@@ -48,9 +59,31 @@ public class ProductList extends Activity implements View.OnClickListener {
         if (productsCollection.deleteProduct(bar_code)) {
             Toast.makeText(getApplicationContext(), "Товар удален из списка", Toast.LENGTH_SHORT).show();
             textProductsCollection.setText(productsCollection.getProductCollectionString());
-            checkAmountLimin();
+            checkAmountLimit();
         } else {
             Toast.makeText(getApplicationContext(), "Ошибка удаления товара", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    SharedPreferences sPref;
+
+    public void saveProductsCollection() {
+        sPref = getPreferences(MODE_PRIVATE);
+        Editor ed = sPref.edit();
+        String productsCollectionJSON = productsCollection.getJSONfromProductsCollection();
+        ed.putString("ProductsCollection", productsCollectionJSON);
+        ed.commit();
+        Log.i("GSON saved", productsCollectionJSON);
+    }
+
+    public void loadProductsCollection() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String productsCollectionJSON = sPref.getString("ProductsCollection", "[]");
+        if (productsCollectionJSON.equals("[]")) {
+            Log.i("GSON load", "false load");
+        } else {
+            productsCollection.getProductsCollectionFromJSON(productsCollectionJSON);
+            Log.i("GSON load", productsCollectionJSON);
         }
     }
 
@@ -122,7 +155,7 @@ public class ProductList extends Activity implements View.OnClickListener {
                 try {
                     amountLim = Integer.parseInt(input.getText().toString());
                     editAmountLimiter.setText(amountLim.toString());
-                    checkAmountLimin();
+                    checkAmountLimit();
                 } catch (NumberFormatException e) {
                     Toast.makeText(getApplicationContext(), "Слишком большое число", Toast.LENGTH_SHORT).show();
                 }
@@ -141,6 +174,7 @@ public class ProductList extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("LifeCycle", "Create");
         setContentView(R.layout.activity_productlist);
 
         btnActCabinet = (Button) findViewById(R.id.btnActCabinet); btnActCabinet.setOnClickListener(this);
@@ -159,17 +193,33 @@ public class ProductList extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        checkAmountLimit();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        host = getString(R.string.host);
+        Log.i("Host", getString(R.string.host));
+        Log.i("App_name", getResources().getString(R.string.app_name));
+        loadProductsCollection();
         textProductsCollection.setText(productsCollection.getProductCollectionString());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveProductsCollection();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnActCabinet:
-                startActivity(new Intent(this, Cabinet.class));
+                startActivity(new Intent(this, CabinetAct.class));
                 break;
             case R.id.btnActPromotion:
-                startActivity(new  Intent(this, Promotion.class));
+                startActivity(new  Intent(this, PromotionAct.class));
                 break;
             case R.id.btnAmountLimiter:
                 dialogAmountLimiter();
