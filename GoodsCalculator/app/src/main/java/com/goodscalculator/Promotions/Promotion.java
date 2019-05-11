@@ -8,6 +8,7 @@ public class Promotion {
     private String description;
     private String name;
     private String imageURL;
+    private String promotionURL;
     private Bitmap image;
 
     public int getId_promotion() {
@@ -42,6 +43,14 @@ public class Promotion {
         this.imageURL = imageURL;
     }
 
+    public String getPromotionURL() {
+        return promotionURL;
+    }
+
+    public void setPromotionURL(String promotionURL) {
+        this.promotionURL = promotionURL;
+    }
+
     public void setImage(Bitmap image) {
         this.image = image;
     }
@@ -52,6 +61,6 @@ public class Promotion {
 
     @Override
     public String toString() {
-        return this.id_promotion + " " + this.name + " " + this.description + " " + this.imageURL;
+        return this.id_promotion + " " + this.name + " " + this.description + " " + this.imageURL + " " + this.promotionURL;
     }
 }

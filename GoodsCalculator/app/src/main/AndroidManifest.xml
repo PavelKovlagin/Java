@@ -13,9 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Cabinet.CabinetAct"></activity>
-        <activity android:name=".Promotions.PromotionAct" />
-        <activity android:name=".ProductList.ProductListAct">
+        <activity android:name=".Cabinet.CabinetAct"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".Promotions.PromotionsAct"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProductList.ProductListAct"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

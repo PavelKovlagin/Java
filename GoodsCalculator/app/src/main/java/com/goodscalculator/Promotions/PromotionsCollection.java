@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 public class PromotionsCollection extends ArrayList<Promotion> {
 
     private ArrayList<Promotion> promotionsCollection = new ArrayList<Promotion>();
+    private final String TAG = this.getClass().getSimpleName();
 
     public int getSize() {
         return promotionsCollection.size();
@@ -23,12 +24,14 @@ public class PromotionsCollection extends ArrayList<Promotion> {
         return promotionsCollection.get(index).getImage();
     }
 
-    public Bitmap randomImage() {
-        Random random = new Random();
-        int index = random.nextInt(promotionsCollection.size());
-        return promotionsCollection.get(index).getImage();
+    public String getDescription(int index) {
+        return  promotionsCollection.get(index).getDescription();
     }
 
+    public String getPromotionURL(int index) {
+        return promotionsCollection.get(index).getPromotionURL();
+    }
+    
     public boolean addPromotions(String host) {
         try {
             JSONhelper json = new JSONhelper();
@@ -46,17 +49,21 @@ public class PromotionsCollection extends ArrayList<Promotion> {
                         downloadImage.execute(promotion.getImageURL());
                         promotion.setImage(downloadImage.get());
                     } catch (ExecutionException e) {
+                        Log.e(TAG, "addPromotions, downloadImage, ExecutionException: " + e.getMessage());
                         e.printStackTrace();
                     } catch (InterruptedException e) {
+                        Log.e(TAG, "addPromotions, downloadImage, InterruptedException: " + e.getMessage());
                         e.printStackTrace();
                     }
                 }
                 return true;
             }
         } catch (InterruptedException e) {
+            Log.e(TAG, "addPromotions, InterruptedException: " + e.getMessage());
             e.printStackTrace();
             return false;
         } catch (ExecutionException e) {
+            Log.e(TAG, "addPromotions, ExecutionException: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

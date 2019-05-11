@@ -17,7 +17,7 @@ public class JSONhelper extends AsyncTask<String, String, String> {
 
     private static final String TAG = JSONhelper.class.getSimpleName();
 
-    public String getJSON(String request) {
+    private String getJSON(String request) {
         String response = null;
         try {
             URL url = new URL(request);

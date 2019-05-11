@@ -77,14 +77,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/btnActPromotion"
+            android:id="@+id/btnPromotionsAct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Акции" />
 
         <Button
-            android:id="@+id/btnActProductList"
+            android:id="@+id/btnProductsListAct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -92,7 +92,7 @@
             android:text="Список товаров" />
 
         <Button
-            android:id="@+id/btnActCabinet"
+            android:id="@+id/btnCabinetAct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -6,21 +6,26 @@ import com.goodscalculator.JSONhelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.security.Permission;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class ProductsCollection extends ArrayList<Product> {
 
-    private static final String TAG = ProductsCollection.class.getSimpleName();
-
+    private final String TAG = this.getClass().getSimpleName();
     private ArrayList<Product> productsCollection = new ArrayList<Product>();
+
+    public void clearCollection() {
+        productsCollection.clear();
+    }
 
     public double countingTotalAmount() {
         double totalAmount = 0;
         for (Product productCol : productsCollection) {
             totalAmount = totalAmount + productCol.getPrice();
         }
-        return totalAmount;
+        return Math.round(totalAmount *100.00) / 100.0;
     }
 
     public String getProductCollectionString() {
@@ -57,6 +62,7 @@ public class ProductsCollection extends ArrayList<Product> {
                 Product product = new Product();
                 product = gson.fromJson(JSONstr, Product.class);
                 productsCollection.add(product);
+
                 return true;
             }
         } catch (ExecutionException e) {

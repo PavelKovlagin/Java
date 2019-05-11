@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.goodscalculator.R;
 import com.goodscalculator.ProductList.ProductListAct;
-import com.goodscalculator.Promotions.PromotionAct;
+import com.goodscalculator.Promotions.PromotionsAct;
 
 public class CabinetAct extends Activity implements View.OnClickListener {
 
@@ -19,17 +19,17 @@ public class CabinetAct extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cabinet);
 
-        btnActListProduction = (Button) findViewById(R.id.btnActProductList); btnActListProduction.setOnClickListener(this);
-        btnActPromotion = (Button) findViewById(R.id.btnActPromotion); btnActPromotion.setOnClickListener(this);
+        btnActListProduction = (Button) findViewById(R.id.btnProductsListAct); btnActListProduction.setOnClickListener(this);
+        btnActPromotion = (Button) findViewById(R.id.btnPromotionsAct); btnActPromotion.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnActPromotion:
-                startActivity(new Intent(this, PromotionAct.class));
+            case R.id.btnPromotionsAct:
+                startActivity(new Intent(this, PromotionsAct.class));
                 break;
-            case R.id.btnActProductList:
+            case R.id.btnProductsListAct:
                 startActivity(new Intent(this, ProductListAct.class));
                 break;
         }

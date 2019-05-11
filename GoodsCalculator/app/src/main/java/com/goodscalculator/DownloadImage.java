@@ -14,25 +14,29 @@ import java.net.URL;
 
 public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
 
-    @Override
-    protected Bitmap doInBackground(String... urls) {
-        String urldisplay = urls[0];
-        Bitmap mIcon = null;
+    private static final String TAG = JSONhelper.class.getSimpleName();
+
+    private Bitmap downloadImage(String request) {
+        Bitmap image = null;
         try {
-            URL url = new URL(urldisplay);
+            URL url = new URL(request);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(3000);
             conn.setReadTimeout(3000);
-
             InputStream in = url.openStream();
-            mIcon = BitmapFactory.decodeStream(in);
+            image = BitmapFactory.decodeStream(in);
         } catch (MalformedURLException e) {
-            Log.e("MalformedURLException", e.getMessage());
+            Log.e(TAG, "DoanloadeImage. MalformedURLException:" + e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            Log.e("IOException", e.getMessage());
+            Log.e(TAG, "DownloadImage. IOException" + e.getMessage());
             e.printStackTrace();
         }
-        return mIcon;
+        return image;
+    }
+
+    @Override
+    protected Bitmap doInBackground(String... urls) {
+        return downloadImage(urls[0]);
     }
 }
