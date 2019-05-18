@@ -31,11 +31,11 @@ public class PromotionsCollection extends ArrayList<Promotion> {
     public String getPromotionURL(int index) {
         return promotionsCollection.get(index).getPromotionURL();
     }
-    
-    public boolean addPromotions(String host) {
+
+    public boolean addPromotions(String host, String promotionsLink) {
         try {
             JSONhelper json = new JSONhelper();
-            json.execute("http://" + host + "/products/get_promotions.php");
+            json.execute("http://" + host + promotionsLink);
             String JSONstr = json.get();
             Log.i("JSONstr", JSONstr);
             if (JSONstr.equals("false\n")) {
@@ -76,5 +76,4 @@ public class PromotionsCollection extends ArrayList<Promotion> {
         }
         return  promotionString;
     }
-
 }

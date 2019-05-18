@@ -1,10 +1,15 @@
 package com.goodscalculator.Promotions;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,15 +19,45 @@ import android.widget.Toast;
 import com.goodscalculator.Cabinet.CabinetAct;
 import com.goodscalculator.ProductList.ProductListAct;
 import com.goodscalculator.R;
+import com.goodscalculator.Servers.Server;
+import com.goodscalculator.Servers.ServersAct;
 
-public class PromotionsAct extends Activity implements View.OnClickListener {
+public class PromotionsAct extends AppCompatActivity implements View.OnClickListener {
 
     private PromotionsCollection promotionsCollection = new PromotionsCollection();
     private Button btnCabinetAct, btnProductListAct, btnNextPromotion, btnPreviousPromotion;
     private ImageView promotionImage;
-    private TextView textPromotionDescription;
+    private TextView textPromotionDescription, textServerName;
     private int promotionIndex = 0;
-    private String host;
+    private Server server = new Server();
+    private SharedPreferences sPref;
+
+    private void load() {
+        sPref = getSharedPreferences("mySettings", MODE_PRIVATE);
+        String serverJSON = sPref.getString("Server", "");
+        if (serverJSON.equals("")) {
+            startActivity(new Intent(this, ServersAct.class));
+            Log.i("ProductServerload", "false load " + serverJSON);
+        } else {
+            server.getServerFromJSON(serverJSON);
+            textServerName.setText("Server: " + server.getName());
+            if (promotionsCollection.addPromotions(server.getIp_address(), server.getPromotionsLink())) {
+                getPromotion();
+                btnNextPromotion.setEnabled(true);
+                btnPreviousPromotion.setEnabled(true);
+                promotionImage.setEnabled(true);
+            } else {
+                Toast.makeText(getApplicationContext(), "Ошибка загрузки акций", Toast.LENGTH_SHORT).show();
+                btnNextPromotion.setEnabled(false);
+                btnPreviousPromotion.setEnabled(false);
+                textPromotionDescription.setText("");
+                promotionImage.setImageBitmap(null);
+                promotionImage.setEnabled(false);
+            }
+
+            Log.i("ProductServerLoad", serverJSON);
+        }
+    }
 
     private void increasePromotionIndex() {
         if (promotionIndex < promotionsCollection.getSize()-1) {
@@ -47,6 +82,26 @@ public class PromotionsAct extends Activity implements View.OnClickListener {
         promotionImage.setImageBitmap(promotionsCollection.getImage(promotionIndex));
     }
 
+    @SuppressLint("LongLogTag")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i("Promotions, LifeCycle", "onCreateOptionsMenu");;
+        menu.add(0, 1, 2, "Выбор сервера");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i("Promotions, LifeCycle", "onOptionsItemSelected");
+        switch (item.getItemId()) {
+            case 1:
+                startActivity(new Intent(this, ServersAct.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,20 +117,20 @@ public class PromotionsAct extends Activity implements View.OnClickListener {
         btnNextPromotion.setOnClickListener(this);
         btnPreviousPromotion = (Button) findViewById(R.id.btnPreviousPromotion);
         btnPreviousPromotion.setOnClickListener(this);
+
         textPromotionDescription = (TextView) findViewById(R.id.textPromotionDescription);
+        textServerName = (TextView) findViewById(R.id.textServerName);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        host = getString(R.string.host);
-        if (promotionsCollection.addPromotions(host)) {
-            getPromotion();
-        } else {
-            Toast.makeText(getApplicationContext(), "Ошибка загрузки акций", Toast.LENGTH_SHORT).show();
-        }
-        Log.i("PromotionsString", promotionsCollection.getPromotionCollectionString());
-        Log.i("PromotionSize", String.valueOf(promotionsCollection.getSize()));
+    protected void onResume() {
+        super.onResume();
+        load();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -83,9 +138,11 @@ public class PromotionsAct extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnCabinetAct:
                 startActivity(new Intent(this, CabinetAct.class));
+                super.finish();
                 break;
             case R.id.btnProductsListAct:
                 startActivity(new Intent(this, ProductListAct.class));
+                super.finish();
                 break;
             case R.id.imageView:
                 String promotionURL = promotionsCollection.getPromotionURL(promotionIndex);

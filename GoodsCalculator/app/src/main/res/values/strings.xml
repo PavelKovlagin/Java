@@ -14,4 +14,7 @@
         completions."
     </string>
     <string name="host">192.168.43.36:777</string>
+    <string name="serversLink">/servers/get_servers.php</string>
+    <string name="productLink">/myShop/get_product_details.php?bar_code=</string>
+    <string name="promotionsLink">/myShop/get_promotions.php</string>
 </resources>
