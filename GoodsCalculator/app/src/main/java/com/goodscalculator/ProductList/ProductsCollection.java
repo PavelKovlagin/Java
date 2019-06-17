@@ -1,5 +1,7 @@
 package com.goodscalculator.ProductList;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -7,14 +9,22 @@ import com.goodscalculator.JSONhelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.SimpleTimeZone;
 import java.util.concurrent.ExecutionException;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ProductsCollection extends ArrayList<Product> {
 
     private final String TAG = this.getClass().getSimpleName();
     private ArrayList<Product> productsCollection = new ArrayList<Product>();
-    private SharedPreferences sPref;
+
+    public  int getSize() {
+        return productsCollection.size();
+    }
 
     public void clearCollection() {
         productsCollection.clear();
@@ -26,6 +36,22 @@ public class ProductsCollection extends ArrayList<Product> {
             totalAmount = totalAmount + productCol.getPrice();
         }
         return Math.round(totalAmount *100.00) / 100.00;
+    }
+
+    public void loadProductsCollectionsFromFile(Context context) {
+        SharedPreferences sPref = context.getSharedPreferences("mySettings", MODE_PRIVATE);
+        String productsCollectionJSON = sPref.getString("ProductsCollection", "[]");
+        Log.i("GSON load", productsCollectionJSON);
+        this.getProductsCollectionFromJSON(productsCollectionJSON);
+    }
+
+    public void saveProductsCollectionToFile(Context context) {
+        SharedPreferences sPref = context.getSharedPreferences("mySettings", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        String productsCollectionJSON = this.getJSONfromProductsCollection();
+        ed.putString("ProductsCollection", productsCollectionJSON);
+        ed.commit();
+        Log.i("GSON saved", productsCollectionJSON);
     }
 
     public String getJSONfromProductsCollection() {
@@ -77,6 +103,25 @@ public class ProductsCollection extends ArrayList<Product> {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @SuppressLint("LongLogTag")
+    public void savePurchase(String host, String insertProductsLink, int id_user) {
+        try {
+            JSONhelper jsoNhelper = new JSONhelper();
+            Date dateNow = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+            String purchaseDate = simpleDateFormat.format(dateNow);
+            String productsJSON = this.getJSONfromProductsCollection();
+            double amount = this.countingTotalAmount();
+            Log.i("ProductsCollections, savePurchase","http://" + host + insertProductsLink + "?id_user="+id_user+"&productsJSON="+productsJSON+"&purchaseDate="+purchaseDate+"&amount="+amount);
+            jsoNhelper.execute("http://" + host + insertProductsLink + "?id_user="+id_user+"&productsJSON="+productsJSON+"&purchaseDate="+purchaseDate+"&amount="+amount);
+            jsoNhelper.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

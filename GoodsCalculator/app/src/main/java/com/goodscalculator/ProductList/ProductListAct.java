@@ -6,8 +6,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,28 +27,29 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.goodscalculator.Cabinet.AuthorizationAct;
 import com.goodscalculator.Cabinet.CabinetAct;
+import com.goodscalculator.Cabinet.User;
 import com.goodscalculator.R;
 import com.goodscalculator.Promotions.PromotionsAct;
 import com.goodscalculator.Servers.Server;
 import com.goodscalculator.Servers.ServersAct;
-import com.goodscalculator.Servers.ServersCollection;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class ProductListAct extends AppCompatActivity implements View.OnClickListener {
 
-    private ProductsCollection productsCollection = new ProductsCollection();
-    private Server server = new Server();
+    private ProductsCollection productsCollection;
+    private Server server;
+    private User user;
+    private String host, usersLink, insertProdutsLink;
     private Button btnCabinetAct, btnPromotionAct, btnProductAdd, btnAmountLimiter, btnProductDelete;
     private TextView textTotalAmount, textServerName;
     private EditText editAmountLimiter;
     private RecyclerView recyclerViewProductsList;
     private int amountLim = 0;
-    private SharedPreferences sPref;
     private ProductAdapter productAdapter;
+    private Intent authorizationAct;
 
     private class ProductAdapter extends RecyclerView.Adapter<ProductHolder> {
         private ArrayList<Product> products;
@@ -122,7 +121,7 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
             displayRecyclerViewProductsList();
             Log.i("GSON", productsCollection.getJSONfromProductsCollection());
             checkAmountLimit();
-            save();
+            productsCollection.saveProductsCollectionToFile(this);
         } else {
             Toast.makeText(getApplicationContext(), "Ошибка добавления товара", Toast.LENGTH_SHORT).show();
         }
@@ -133,34 +132,9 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(getApplicationContext(), "Товар удален из списка", Toast.LENGTH_SHORT).show();
             displayRecyclerViewProductsList();
             checkAmountLimit();
-            save();
+            productsCollection.saveProductsCollectionToFile(this);
         } else {
             Toast.makeText(getApplicationContext(), "Ошибка удаления товара", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void save() {
-        sPref = getSharedPreferences("mySettings", MODE_PRIVATE);
-        Editor ed = sPref.edit();
-        String productsCollectionJSON = productsCollection.getJSONfromProductsCollection();
-        ed.putString("ProductsCollection", productsCollectionJSON);
-        ed.commit();
-        Log.i("GSON saved", productsCollectionJSON);
-    }
-
-    private void load() {
-        sPref = getSharedPreferences("mySettings", MODE_PRIVATE);
-        String productsCollectionJSON = sPref.getString("ProductsCollection", "[]");
-        String serverJSON = sPref.getString("Server", "");
-        productsCollection.getProductsCollectionFromJSON(productsCollectionJSON);
-        Log.i("GSON load", productsCollectionJSON);
-        if (serverJSON.equals("")) {
-            startActivity(new Intent(this, ServersAct.class));
-            Log.i("ProductServerload", "false load " + serverJSON);
-        } else {
-            server.getServerFromJSON(serverJSON);
-            textServerName.setText("Server: " + server.getName());
-            Log.i("ProductServerLoad", serverJSON);
         }
     }
 
@@ -310,6 +284,8 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
     private void displayRecyclerViewProductsList() {
         productAdapter = new ProductAdapter(productsCollection.getProductsCollection());
         recyclerViewProductsList.setAdapter(productAdapter);
+        if (productsCollection.getSize() > 0)
+            recyclerViewProductsList.smoothScrollToPosition(recyclerViewProductsList.getAdapter().getItemCount() - 1);
     }
 
     @SuppressLint("LongLogTag")
@@ -369,6 +345,7 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
         Log.i("ProductListCollection, LifeCycle", "onCreateOptionsMenu");
         menu.add(0, 1, 2, "Очистить список");
         menu.add(0, 2, 2, "Выбор сервера");
+        menu.add(0, 3, 2, "Сохранить список товаров");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -385,6 +362,16 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
             case 2:
                 startActivity(new Intent(this, ServersAct.class));
                 break;
+            case 3:
+                if (user.doLogin(host, usersLink)) {
+                    if (productsCollection.getSize() > 0) {
+                        productsCollection.savePurchase(host, insertProdutsLink, user.getId_user());
+                    } else {
+                        Toast.makeText(this, "Список товаров пуст", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    startActivity(authorizationAct);
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -394,7 +381,20 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         Log.i("ProductListCollection, LifeCycle", "onResume");
-        load();
+        host = getString(R.string.host);
+        usersLink = getString(R.string.loginLink);
+        insertProdutsLink = getString(R.string.insertProductsLink);
+        authorizationAct = new Intent(this, AuthorizationAct.class);
+        productsCollection = new ProductsCollection();
+        productsCollection.loadProductsCollectionsFromFile(this);
+        server = new Server();
+        if (server.loadServerFromFile(this)) {
+            textServerName.setText("Server: " + server.getName());
+        } else {
+            textServerName.setText(getString(R.string.serverNotFound));
+        }
+        user = new User();
+        user.loadUserFromFile(this);
         checkAmountLimit();
         displayRecyclerViewProductsList();
     }
@@ -409,10 +409,8 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
     @SuppressLint("LongLogTag")
     @Override
     protected void onStop() {
-        //save();
         Log.i("ProductListCollection, LifeCycle", "onStop");
         super.onStop();
-        ;
     }
 
     @SuppressLint("LongLogTag")

@@ -1,10 +1,16 @@
 package com.goodscalculator.Servers;
 
-import com.goodscalculator.ProductList.ProductsCollection;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class Server {
+import static android.content.Context.MODE_PRIVATE;
+
+public class Server{
     private int id_server;
     private String name;
     private String ip_address;
@@ -16,6 +22,19 @@ public class Server {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         return gson.toJson(this);
+    }
+
+    public boolean loadServerFromFile(Context context) {
+        SharedPreferences sPref = context.getSharedPreferences("mySettings", MODE_PRIVATE);
+        String serverJSON = sPref.getString("Server", "");
+        if (serverJSON.equals("")) {
+            Log.i("ProductServerload", "false load " + serverJSON);
+            return false;
+        } else {
+            this.getServerFromJSON(serverJSON);
+            Log.i("ProductServerLoad", serverJSON);
+            return true;
+        }
     }
 
     public void getServerFromJSON(String json) {

@@ -20,7 +20,7 @@ public class ServersCollection extends ArrayList<Server> {
     public boolean addServers(String host, String serversLink) {
         try {
             JSONhelper json = new JSONhelper();
-            json.execute("http://192.168.43.36:777/servers/get_servers.php");
+            json.execute("http://" + host + serversLink);
             String JSONstr = json.get();
             Log.i("JSONstr", JSONstr);
             if (JSONstr.equals("false\n")) {

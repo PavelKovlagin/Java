@@ -1,5 +1,7 @@
 package com.goodscalculator.Servers;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goodscalculator.R;
 
@@ -23,7 +24,6 @@ public class ServersAct extends AppCompatActivity implements View.OnClickListene
 
     private RecyclerView recyclerViewServer;
     private ServersCollection serversCollection = new ServersCollection();
-    private String host, serversLink;
     private ServerAdapter serverAdapter;
     private SharedPreferences sPref;
 
@@ -39,15 +39,38 @@ public class ServersAct extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onStart() {
         super.onStart();
-        host = getString(R.string.host);
-        serversLink = getString(R.string.serversLink);
-        serversCollection.addServers(host, serversLink);
+        if (serversCollection.addServers(getString(R.string.host),  getString(R.string.serversLink))) {
+            Log.i("ServersAct", "Список серверов загруден");
+        } else {
+            Log.i("ServersAct", "Ошибка загрузки серверов");
+            dialogServers();
+        }
         displayRecyclerViewServers();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void dialogServers() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Ошибка загрузки серверов");
+
+        builder.setPositiveButton("Повторить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (serversCollection.addServers(getString(R.string.host), getString(R.string.serversLink))) {
+                    Log.i("ServersAct", "Список серверов загружен");
+                } else {
+                    Log.i("ServersAct", "Ошибка загрузки серверов");
+                    dialogServers();
+                }
+            }
+        });
+        builder.setNegativeButton("Назад", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.show();
     }
 
     private void displayRecyclerViewServers() {

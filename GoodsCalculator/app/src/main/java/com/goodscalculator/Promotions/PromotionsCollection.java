@@ -8,7 +8,6 @@ import com.goodscalculator.JSONhelper;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class PromotionsCollection extends ArrayList<Promotion> {
@@ -47,13 +46,13 @@ public class PromotionsCollection extends ArrayList<Promotion> {
                     try {
                         DownloadImage downloadImage = new DownloadImage();
                         downloadImage.execute(promotion.getImageURL());
-                        promotion.setImage(downloadImage.get());
+                        if (downloadImage.get() != null){
+                            promotion.setImage(downloadImage.get());
+                        }
                     } catch (ExecutionException e) {
                         Log.e(TAG, "addPromotions, downloadImage, ExecutionException: " + e.getMessage());
-                        e.printStackTrace();
                     } catch (InterruptedException e) {
                         Log.e(TAG, "addPromotions, downloadImage, InterruptedException: " + e.getMessage());
-                        e.printStackTrace();
                     }
                 }
                 return true;

@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeoutException;
 
-public class JSONhelper extends AsyncTask<String, String, String> {
+public class  JSONhelper extends AsyncTask<String, String, String> {
 
     private static final String TAG = JSONhelper.class.getSimpleName();
 

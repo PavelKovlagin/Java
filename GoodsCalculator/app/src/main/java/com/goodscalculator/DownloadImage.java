@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,14 +24,14 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
             conn.setReadTimeout(3000);
             InputStream in = url.openStream();
             image = BitmapFactory.decodeStream(in);
+            return image;
         } catch (MalformedURLException e) {
             Log.e(TAG, "DoanloadeImage. MalformedURLException:" + e.getMessage());
-            e.printStackTrace();
+            return null;
         } catch (IOException e) {
             Log.e(TAG, "DownloadImage. IOException" + e.getMessage());
-            e.printStackTrace();
+            return null;
         }
-        return image;
     }
 
     @Override

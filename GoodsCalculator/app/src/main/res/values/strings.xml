@@ -13,8 +13,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="host">192.168.43.36:777</string>
+    <string name="serverNotFound">Server: Not Found</string>
+    <string name="host">95.66.205.188:777</string>
     <string name="serversLink">/servers/get_servers.php</string>
-    <string name="productLink">/myShop/get_product_details.php?bar_code=</string>
-    <string name="promotionsLink">/myShop/get_promotions.php</string>
+    <string name="registerLink">/servers/register_user.php</string>
+    <string name="loginLink">/servers/login_user.php</string>
+    <string name="insertProductsLink">/servers/insert_products.php</string>
 </resources>

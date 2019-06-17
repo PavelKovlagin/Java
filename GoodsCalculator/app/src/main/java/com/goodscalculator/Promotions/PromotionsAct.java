@@ -33,15 +33,9 @@ public class PromotionsAct extends AppCompatActivity implements View.OnClickList
     private SharedPreferences sPref;
 
     private void load() {
-        sPref = getSharedPreferences("mySettings", MODE_PRIVATE);
-        String serverJSON = sPref.getString("Server", "");
-        if (serverJSON.equals("")) {
-            startActivity(new Intent(this, ServersAct.class));
-            Log.i("ProductServerload", "false load " + serverJSON);
-        } else {
-            server.getServerFromJSON(serverJSON);
-            textServerName.setText("Server: " + server.getName());
+        if (server.loadServerFromFile(this)) {
             if (promotionsCollection.addPromotions(server.getIp_address(), server.getPromotionsLink())) {
+                textServerName.setText("Server: " + server.getName());
                 getPromotion();
                 btnNextPromotion.setEnabled(true);
                 btnPreviousPromotion.setEnabled(true);
@@ -54,8 +48,10 @@ public class PromotionsAct extends AppCompatActivity implements View.OnClickList
                 promotionImage.setImageBitmap(null);
                 promotionImage.setEnabled(false);
             }
-
-            Log.i("ProductServerLoad", serverJSON);
+            Log.i("ProductServerLoad", server.toString());
+        } else {
+            Toast.makeText(this, "Ошибка загрузки сервера", Toast.LENGTH_SHORT).show();
+            textServerName.setText(getString(R.string.serverNotFound));
         }
     }
 

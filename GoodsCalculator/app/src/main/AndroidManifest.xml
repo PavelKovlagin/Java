@@ -17,6 +17,10 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".Cabinet.CabinetAct"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".Cabinet.AuthorizationAct"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".Cabinet.RegistrationAct"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".Promotions.PromotionsAct"
             android:screenOrientation="portrait"/>
         <activity android:name=".ProductList.ProductListAct"
