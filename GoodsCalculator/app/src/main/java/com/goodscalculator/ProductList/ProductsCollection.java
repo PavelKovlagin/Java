@@ -89,6 +89,8 @@ public class ProductsCollection extends ArrayList<Product> {
             Log.i(TAG,"addWeightProduct: " + productWeight + "*" + product.getPrice() + "/" + "1000");
             double price = (productWeight * product.getPrice()) / 1000;
             product.setPrice(Math.round(price *100.00) / 100.00);
+            product.setBar_code(bar_code);
+            product.setName(product.getName() + ", " + productWeight + " гр.");
             productsCollection.add(product);
             return true;
         } else {
@@ -107,7 +109,7 @@ public class ProductsCollection extends ArrayList<Product> {
     }
 
     @SuppressLint("LongLogTag")
-    public void savePurchase(String host, String insertProductsLink, int id_user) {
+    public void savePurchase(String host, String insertProductsLink, int id_user, int id_server) {
         try {
             JSONhelper jsoNhelper = new JSONhelper();
             Date dateNow = new Date();
@@ -115,8 +117,14 @@ public class ProductsCollection extends ArrayList<Product> {
             String purchaseDate = simpleDateFormat.format(dateNow);
             String productsJSON = this.getJSONfromProductsCollection();
             double amount = this.countingTotalAmount();
-            Log.i("ProductsCollections, savePurchase","http://" + host + insertProductsLink + "?id_user="+id_user+"&productsJSON="+productsJSON+"&purchaseDate="+purchaseDate+"&amount="+amount);
-            jsoNhelper.execute("http://" + host + insertProductsLink + "?id_user="+id_user+"&productsJSON="+productsJSON+"&purchaseDate="+purchaseDate+"&amount="+amount);
+            String request = "http://" + host + insertProductsLink +
+                    "?id_user="+id_user+
+                    "&id_server="+id_server+
+                    "&productsJSON="+productsJSON+
+                    "&purchaseDate="+purchaseDate+
+                    "&amount="+amount;
+            Log.i("ProductCollection, savePurchase", request);
+            jsoNhelper.execute(request);
             jsoNhelper.get();
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -145,6 +153,29 @@ public class ProductsCollection extends ArrayList<Product> {
         } catch (InterruptedException e) {
             Log.e(TAG, "addProduct, InterruptedException: " + e.getMessage());
             return null;
+        }
+    }
+
+    public boolean getPurchaseProductsFromDB(String host, String purchaseProductsLink, int id_purchase) {
+        try {
+            JSONhelper jh = new JSONhelper();
+            String request = "http://" + host + purchaseProductsLink + "?id_purchase=" + id_purchase;
+            jh.execute(request);
+            String JSONresponse = jh.get();
+            if (!JSONresponse.equals("false\n")) {
+                Log.i(String.valueOf(this.getClass()), JSONresponse);
+                this.getProductsCollectionFromJSON(JSONresponse);
+                return true;
+            } else {
+                Log.e(String.valueOf(this.getClass()), "false");
+                return false;
+            }
+        } catch (ExecutionException e) {
+            Log.e(String.valueOf(this.getClass()), e.getMessage());
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(String.valueOf(this.getClass()), e.getMessage());
+            return false;
         }
     }
 

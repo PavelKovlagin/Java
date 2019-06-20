@@ -11,44 +11,16 @@ public class Promotion {
     private String promotionURL;
     private Bitmap image;
 
-    public int getId_promotion() {
-        return id_promotion;
-    }
-
-    public void setId_promotion(int id_promotion) {
-        this.id_promotion = id_promotion;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
     public String getPromotionURL() {
         return promotionURL;
-    }
-
-    public void setPromotionURL(String promotionURL) {
-        this.promotionURL = promotionURL;
     }
 
     public void setImage(Bitmap image) {

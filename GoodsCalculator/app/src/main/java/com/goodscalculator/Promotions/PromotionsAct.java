@@ -25,17 +25,16 @@ import com.goodscalculator.Servers.ServersAct;
 public class PromotionsAct extends AppCompatActivity implements View.OnClickListener {
 
     private PromotionsCollection promotionsCollection = new PromotionsCollection();
+    private Server server = new Server();
     private Button btnCabinetAct, btnProductListAct, btnNextPromotion, btnPreviousPromotion;
     private ImageView promotionImage;
     private TextView textPromotionDescription, textServerName;
     private int promotionIndex = 0;
-    private Server server = new Server();
-    private SharedPreferences sPref;
 
     private void load() {
         if (server.loadServerFromFile(this)) {
+            textServerName.setText("Server: " + server.getName());
             if (promotionsCollection.addPromotions(server.getIp_address(), server.getPromotionsLink())) {
-                textServerName.setText("Server: " + server.getName());
                 getPromotion();
                 btnNextPromotion.setEnabled(true);
                 btnPreviousPromotion.setEnabled(true);

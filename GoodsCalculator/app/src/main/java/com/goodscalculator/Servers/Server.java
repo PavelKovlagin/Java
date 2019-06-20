@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
+import com.goodscalculator.JSONhelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -37,6 +41,16 @@ public class Server{
         }
     }
 
+    public void saveServerToFile(Context context) {
+        SharedPreferences sPref = context.getSharedPreferences("mySettings", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        String JSONserver = this.getJSONfromServer();
+        ed.putString("Server", JSONserver);
+        ed.putString("ProductsCollection", "[]");
+        ed.commit();
+        Log.i("ServerAct, Server saved", this.toString());
+    }
+
     public void getServerFromJSON(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -50,60 +64,56 @@ public class Server{
         this.productDetailsLink = server.productDetailsLink;
     }
 
-    public int getId_server() {
-        return id_server;
+    public boolean getServerFromDB(String host, String serverLink, int id_server) {
+        try {
+            JSONhelper jh = new JSONhelper();
+            String request = "http://" + host + serverLink + "?id_server=" + id_server;
+            jh.execute(request);
+            String JSONresponse = jh.get();
+            if (!JSONresponse.equals("false\n")) {
+                this.getServerFromJSON(JSONresponse);
+                Log.i(String.valueOf(this.getClass()), this.toString());
+                return true;
+            } else {
+                Log.e(String.valueOf(this.getClass()), "false");
+                return false;
+            }
+        } catch (ExecutionException e) {
+            Log.e(String.valueOf(this.getClass()), e.getMessage());
+            return false;
+        } catch (InterruptedException e) {
+            Log.e(String.valueOf(this.getClass()), e.getMessage());
+            return false;
+        }
+
     }
 
-    public void setId_server(int id_server) {
-        this.id_server = id_server;
+    public int getId_server() {
+        return id_server;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getIp_address() {
         return ip_address;
-    }
-
-    public void setIp_address(String ip_adress) {
-        this.ip_address = ip_adress;
     }
 
     public String getPromotionsLink() {
         return promotionsLink;
     }
 
-    public void setPromotionsLink(String promotionsLink) {
-        this.promotionsLink = promotionsLink;
-    }
-
     public String getProductDetailsLink() {
         return productDetailsLink;
     }
 
-    public void setProductDetailsLink(String productDetailsLink) {
-        this.productDetailsLink = productDetailsLink;
-    }
-
-    public String getProductsLink() {
-        return productsLink;
-    }
-
-    public void setProductsLink(String productsLink) {
-        this.productsLink = productsLink;
-    }
-
     @Override
     public String toString() {
-        return this.name + " " +
-                this.ip_address + " " +
-                this.productDetailsLink + " " +
-                this.productsLink + " " +
-                this.promotionsLink;
+        return "Название сервера: " + this.name + "\n" +
+                "IP адрес: " + this.ip_address + "\n" +
+                "Ссылка продукта: " + this.productDetailsLink + "\n" +
+                "Ссылка продуктоа: " +this.productsLink + "\n" +
+                "Ссылка акций" + this.promotionsLink;
     }
 }

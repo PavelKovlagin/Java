@@ -365,7 +365,7 @@ public class ProductListAct extends AppCompatActivity implements View.OnClickLis
             case 3:
                 if (user.doLogin(host, usersLink)) {
                     if (productsCollection.getSize() > 0) {
-                        productsCollection.savePurchase(host, insertProdutsLink, user.getId_user());
+                        productsCollection.savePurchase(host, insertProdutsLink, user.getId_user(), server.getId_server());
                     } else {
                         Toast.makeText(this, "Список товаров пуст", Toast.LENGTH_SHORT).show();
                     }

@@ -22,10 +22,9 @@ import java.util.ArrayList;
 
 public class ServersAct extends AppCompatActivity implements View.OnClickListener {
 
-    private RecyclerView recyclerViewServer;
     private ServersCollection serversCollection = new ServersCollection();
+    private RecyclerView recyclerViewServer;
     private ServerAdapter serverAdapter;
-    private SharedPreferences sPref;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,17 +125,15 @@ public class ServersAct extends AppCompatActivity implements View.OnClickListene
             mBtnServerChange.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sPref = getSharedPreferences("mySettings", MODE_PRIVATE);
-                    SharedPreferences.Editor ed = sPref.edit();
-                    String JSONserver = server.getJSONfromServer();
-                    ed.putString("Server", JSONserver);
-                    ed.putString("ProductsCollection", "[]");
-                    ed.commit();
-                    Log.i("ServerAct, Server saved", JSONserver);
+                    saveServer(server);
                     ServersAct.super.finish();
                 }
             });
         }
+    }
+
+    private void saveServer(Server server) {
+        server.saveServerToFile(this);
     }
 
     @Override

@@ -12,9 +12,9 @@ import com.goodscalculator.R;
 
 public class RegistrationAct extends Activity implements View.OnClickListener {
 
-    User user;
-    EditText editLogin, editPassword, editConfirmationPassword;
-    Button btnRegister;
+    private User user;
+    private EditText editLogin, editPassword, editConfirmationPassword;
+    private Button btnRegister;
 
     private void registerUser(String login, String password, String confirmationPassword) {
         String strErrors = "";

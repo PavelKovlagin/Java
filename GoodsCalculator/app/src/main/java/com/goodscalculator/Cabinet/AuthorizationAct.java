@@ -2,9 +2,7 @@ package com.goodscalculator.Cabinet;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,14 +13,14 @@ import com.goodscalculator.R;
 
 public class AuthorizationAct extends Activity implements View.OnClickListener {
 
-    User user;
-    String host;
-    String loginLink;
-    Button btnLogin;
-    EditText editPassword, editLogin;
-    TextView textRegistration;
+    private User user;
+    private String host;
+    private String loginLink;
+    private Button btnLogin;
+    private EditText editPassword, editLogin;
+    private TextView textRegistration;
 
-    public void login(String login, String password) {
+    private void login(String login, String password) {
         user = new User(login, password);
         if (user.doLogin(host, loginLink)) {
             user.saveUserToFile(this);
